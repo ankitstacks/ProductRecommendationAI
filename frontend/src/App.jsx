@@ -336,6 +336,70 @@ function App() {
 
 
   // =====================================================
+  // UPDATE URL HASH WHILE SCROLLING
+  // =====================================================
+
+  useEffect(() => {
+
+    const sectionIds = [
+      "home",
+      "search",
+      "products",
+      "favorites",
+      "recommendations",
+      "recommendation-results",
+      "recently-viewed",
+    ];
+
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean);
+
+    if (!sections.length) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+
+        const visibleSections = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort(
+            (a, b) =>
+              b.intersectionRatio - a.intersectionRatio
+          );
+
+        if (!visibleSections.length) {
+          return;
+        }
+
+        const activeId =
+          visibleSections[0].target.id;
+
+        if (window.location.hash !== `#${activeId}`) {
+          window.history.replaceState(
+            null,
+            "",
+            `#${activeId}`
+          );
+        }
+      },
+      {
+        threshold: [0.2, 0.35, 0.5, 0.65],
+        rootMargin: "-15% 0px -55% 0px",
+      }
+    );
+
+    sections.forEach((section) =>
+      observer.observe(section)
+    );
+
+    return () => observer.disconnect();
+
+  }, [loading, recentlyViewed.length]);
+
+
+  // =====================================================
   // SAVE FAVORITES
   // =====================================================
 
@@ -1095,7 +1159,10 @@ function App() {
           SEARCH
       ================================================= */}
 
-      <section className="search-section">
+      <section
+        className="search-section"
+        id="search"
+      >
 
         <div className="search-box">
 
@@ -1886,6 +1953,7 @@ function App() {
 
         <section
           className="products-section"
+          id="recently-viewed"
         >
 
           <div className="section-header">
