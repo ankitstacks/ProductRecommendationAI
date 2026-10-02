@@ -5,6 +5,7 @@ import {
   Search,
   Sparkles,
   ShoppingBag,
+  User,
   Heart,
   TrendingUp,
   RefreshCw,
@@ -22,7 +23,7 @@ function App() {
   // =====================================================
 
   const API_BASE_URL =
-    "https://productrecommendationai.onrender.com";
+    "http://127.0.0.1:8001";
 
 
   // =====================================================
@@ -957,6 +958,18 @@ function App() {
 
           </button>
 
+
+          <button
+            className="profile-button"
+          >
+
+            <User size={18} />
+
+            <span>
+              Account
+            </span>
+
+          </button>
 
         </div>
 
@@ -1970,246 +1983,6 @@ function App() {
 
 
       {/* =================================================
-          PRODUCT DETAILS MODAL
-      ================================================= */}
-
-      {selectedProduct && (
-        <div
-          onClick={() => setSelectedProduct(null)}
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 9999,
-            background: "rgba(0, 0, 0, 0.78)",
-            backdropFilter: "blur(14px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "24px",
-          }}
-        >
-          <div
-            onClick={(event) => event.stopPropagation()}
-            style={{
-              width: "100%",
-              maxWidth: "900px",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              borderRadius: "24px",
-              background: "linear-gradient(145deg, #171725, #0f0f18)",
-              border: "1px solid rgba(255,255,255,0.12)",
-              boxShadow: "0 30px 100px rgba(0,0,0,0.65)",
-              position: "relative",
-              padding: "28px",
-            }}
-          >
-            <button
-              onClick={() => setSelectedProduct(null)}
-              style={{
-                position: "absolute",
-                top: "18px",
-                right: "18px",
-                width: "38px",
-                height: "38px",
-                borderRadius: "50%",
-                border: "1px solid rgba(255,255,255,0.12)",
-                background: "rgba(255,255,255,0.07)",
-                color: "#fff",
-                fontSize: "22px",
-                cursor: "pointer",
-                zIndex: 5,
-              }}
-              aria-label="Close product details"
-            >
-              ×
-            </button>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "minmax(280px, 0.9fr) minmax(300px, 1.1fr)",
-                gap: "32px",
-                alignItems: "center",
-              }}
-            >
-              <div
-                style={{
-                  minHeight: "360px",
-                  borderRadius: "20px",
-                  background: "linear-gradient(145deg, #202033, #12121d)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "25px",
-                }}
-              >
-                <img
-                  src={selectedProduct.image_url || selectedProduct.image}
-                  alt={selectedProduct.name}
-                  style={{
-                    width: "100%",
-                    maxHeight: "330px",
-                    objectFit: "contain",
-                    borderRadius: "16px",
-                  }}
-                />
-              </div>
-
-              <div>
-                <span
-                  style={{
-                    display: "inline-block",
-                    padding: "7px 12px",
-                    borderRadius: "20px",
-                    background: "rgba(124,58,237,0.15)",
-                    border: "1px solid rgba(124,58,237,0.3)",
-                    color: "#c4b5fd",
-                    fontSize: "12px",
-                    fontWeight: "700",
-                    marginBottom: "16px",
-                  }}
-                >
-                  {selectedProduct.category || "Product"}
-                </span>
-
-                <h2
-                  style={{
-                    margin: "0 0 8px",
-                    color: "#fff",
-                    fontSize: "32px",
-                    lineHeight: "1.15",
-                  }}
-                >
-                  {selectedProduct.name}
-                </h2>
-
-                {selectedProduct.brand && (
-                  <p
-                    style={{
-                      margin: "0 0 18px",
-                      color: "#9292a8",
-                      fontSize: "15px",
-                    }}
-                  >
-                    {selectedProduct.brand}
-                  </p>
-                )}
-
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    marginBottom: "20px",
-                    color: "#fcd34d",
-                    fontSize: "14px",
-                    fontWeight: "700",
-                  }}
-                >
-                  ⭐ {selectedProduct.rating ?? "4.5"}
-                  <span style={{ color: "#77778a", fontWeight: "400" }}>
-                    Product Rating
-                  </span>
-                </div>
-
-                <div
-                  style={{
-                    fontSize: "30px",
-                    fontWeight: "800",
-                    color: "#fff",
-                    marginBottom: "20px",
-                  }}
-                >
-                  ₹{Number(selectedProduct.price || 0).toLocaleString("en-IN")}
-                </div>
-
-                <div style={{ marginBottom: "22px" }}>
-                  <h4 style={{ color: "#fff", margin: "0 0 8px", fontSize: "14px" }}>
-                    Description
-                  </h4>
-                  <p
-                    style={{
-                      color: "#aaaabd",
-                      lineHeight: "1.7",
-                      margin: 0,
-                      fontSize: "14px",
-                    }}
-                  >
-                    {selectedProduct.description ||
-                      "No description available for this product."}
-                  </p>
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    marginBottom: "24px",
-                    color:
-                      Number(selectedProduct.stock || 0) > 0
-                        ? "#86efac"
-                        : "#fca5a5",
-                    fontSize: "14px",
-                    fontWeight: "700",
-                  }}
-                >
-                  <span
-                    style={{
-                      width: "9px",
-                      height: "9px",
-                      borderRadius: "50%",
-                      background:
-                        Number(selectedProduct.stock || 0) > 0
-                          ? "#22c55e"
-                          : "#ef4444",
-                    }}
-                  />
-                  {Number(selectedProduct.stock || 0) > 0
-                    ? `In Stock • ${selectedProduct.stock} available`
-                    : "Out of Stock"}
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "12px",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <button
-                    className="primary-button"
-                    onClick={() => toggleFavorite(selectedProduct.id)}
-                  >
-                    <Heart
-                      size={18}
-                      fill={
-                        favorites.includes(selectedProduct.id)
-                          ? "currentColor"
-                          : "none"
-                      }
-                    />
-                    {favorites.includes(selectedProduct.id)
-                      ? "Remove Favorite"
-                      : "Add to Favorites"}
-                  </button>
-
-                  <button
-                    className="secondary-button"
-                    onClick={() => setSelectedProduct(null)}
-                  >
-                    Continue Shopping
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-
-      {/* =================================================
           FOOTER
       ================================================= */}
 
@@ -2228,6 +2001,90 @@ function App() {
           powered by machine learning.
 
         </p>
+
+        <div className="footer-credit-wrap">
+
+          <div className="footer-credit">
+
+            <span className="footer-credit-label">Crafted by</span>
+
+            <span className="footer-credit-name">Ankit Kushwaha</span>
+
+            <span className="footer-credit-dot" />
+
+          </div>
+
+        </div>
+
+        <style>{`
+          .footer-credit-wrap {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 18px;
+          }
+
+          .footer-credit {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 12px;
+            border: 1px solid rgba(124, 58, 237, 0.18);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.025);
+            box-shadow: 0 0 22px rgba(124, 58, 237, 0.07);
+            font-size: 11px;
+            letter-spacing: 0.04em;
+            transition: all 0.3s ease;
+          }
+
+          .footer-credit:hover {
+            transform: translateY(-2px);
+            border-color: rgba(124, 58, 237, 0.42);
+            box-shadow: 0 0 28px rgba(124, 58, 237, 0.16);
+          }
+
+          .footer-credit-label {
+            color: #77778b;
+            font-weight: 500;
+          }
+
+          .footer-credit-name {
+            font-weight: 800;
+            background: linear-gradient(90deg, #a78bfa, #60a5fa, #f472b6, #a78bfa);
+            background-size: 250% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: footerNameShimmer 4s linear infinite;
+          }
+
+          .footer-credit-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #8b5cf6;
+            box-shadow: 0 0 9px rgba(139, 92, 246, 0.9);
+            animation: footerDotPulse 1.8s ease-in-out infinite;
+          }
+
+          @keyframes footerNameShimmer {
+            0% { background-position: 0% center; }
+            100% { background-position: 250% center; }
+          }
+
+          @keyframes footerDotPulse {
+            0%, 100% { opacity: 0.45; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.25); }
+          }
+
+          @media (max-width: 600px) {
+            .footer-credit {
+              font-size: 10px;
+              padding: 5px 10px;
+            }
+          }
+        `}</style>
 
       </footer>
 
