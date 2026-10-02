@@ -1986,21 +1986,24 @@ function App() {
           FOOTER
       ================================================= */}
 
-      <footer>
+      <footer className="productai-footer">
 
-        <div className="logo">
+        <div className="footer-brand">
 
-          Product<span>AI</span>
+          <div className="logo">
+
+            Product<span>AI</span>
+
+          </div>
+
+          <p>
+
+            Intelligent product discovery
+            powered by machine learning.
+
+          </p>
 
         </div>
-
-
-        <p>
-
-          Intelligent product discovery
-          powered by machine learning.
-
-        </p>
 
         <div className="footer-credit-wrap">
 
@@ -2017,6 +2020,33 @@ function App() {
         </div>
 
         <style>{`
+          .productai-footer {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            gap: 32px !important;
+            width: 100%;
+            box-sizing: border-box;
+          }
+
+          .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            min-width: 0;
+          }
+
+          .productai-footer .footer-brand .logo {
+            flex: 0 0 auto;
+            margin: 0 !important;
+          }
+
+          .productai-footer .footer-brand p {
+            margin: 0 !important;
+            max-width: 320px;
+            line-height: 1.45;
+          }
+
           .footer-credit-wrap {
             width: 100%;
             display: flex;
@@ -2078,7 +2108,27 @@ function App() {
             50% { opacity: 1; transform: scale(1.25); }
           }
 
-          @media (max-width: 600px) {
+          @media (max-width: 700px) {
+            .productai-footer {
+              flex-direction: column !important;
+              justify-content: center !important;
+              text-align: center;
+              gap: 14px !important;
+            }
+
+            .footer-brand {
+              flex-direction: column;
+              gap: 6px;
+            }
+
+            .productai-footer .footer-brand p {
+              max-width: 280px;
+            }
+
+            .footer-credit-wrap {
+              margin-top: 0;
+            }
+
             .footer-credit {
               font-size: 10px;
               padding: 5px 10px;
