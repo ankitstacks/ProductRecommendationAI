@@ -305,10 +305,11 @@ function App() {
           await response.json();
 
 
-        console.log(
-          "Products loaded from PostgreSQL:",
-          data
-        );
+       console.log(
+  "PRODUCTAI V2 - PRODUCTS FROM ADMIN API:",
+  data.length,
+  data
+);
 
 
         setProducts(data);
