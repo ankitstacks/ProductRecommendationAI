@@ -5,6 +5,7 @@ import {
   Search,
   Sparkles,
   ShoppingBag,
+  User,
   Heart,
   TrendingUp,
   RefreshCw,
@@ -22,7 +23,7 @@ function App() {
   // =====================================================
 
   const API_BASE_URL =
-    "https://productrecommendationai.onrender.com";
+    "http://127.0.0.1:8001";
 
 
   // =====================================================
@@ -284,7 +285,10 @@ function App() {
 
 
         const response = await fetch(
-          `${API_BASE_URL}/api/products`
+          `${API_BASE_URL}/api/products`,
+          {
+            cache: "no-store",
+          }
         );
 
 
@@ -332,85 +336,18 @@ function App() {
 
     loadProducts();
 
-  }, []);
-
-
-  // =====================================================
-  // UPDATE URL HASH WHILE SCROLLING
-  // =====================================================
-
-  useEffect(() => {
-
-    const sectionIds = [
-      "home",
-      "search",
-      "products",
-      "favorites",
-      "recommendations",
-      "recommendation-results",
-      "recently-viewed",
-    ];
-
-    const updateActiveSection = () => {
-
-      const sections = sectionIds
-        .map((id) => document.getElementById(id))
-        .filter(Boolean);
-
-      if (!sections.length) return;
-
-      // Use the section whose top has most recently crossed
-      // the upper part of the viewport. This reliably catches
-      // the Products section even when sections have different heights.
-      const triggerPoint = window.innerHeight * 0.35;
-
-      let activeSection = sections[0];
-
-      for (const section of sections) {
-        const top = section.getBoundingClientRect().top;
-
-        if (top <= triggerPoint) {
-          activeSection = section;
-        }
-      }
-
-      const activeId = activeSection.id;
-
-      if (window.location.hash !== `#${activeId}`) {
-        window.history.replaceState(
-          null,
-          "",
-          `#${activeId}`
-        );
-      }
-    };
-
-    updateActiveSection();
-
-    window.addEventListener(
-      "scroll",
-      updateActiveSection,
-      { passive: true }
-    );
-
-    window.addEventListener(
-      "resize",
-      updateActiveSection
+    // Keep the main catalogue synchronized with Admin Product
+    // Management without requiring a manual page refresh.
+    const productRefreshInterval = setInterval(
+      loadProducts,
+      5000
     );
 
     return () => {
-      window.removeEventListener(
-        "scroll",
-        updateActiveSection
-      );
-
-      window.removeEventListener(
-        "resize",
-        updateActiveSection
-      );
+      clearInterval(productRefreshInterval);
     };
 
-  }, [loading, recentlyViewed.length]);
+  }, []);
 
 
   // =====================================================
@@ -1036,6 +973,18 @@ function App() {
           </button>
 
 
+          <button
+            className="profile-button"
+          >
+
+            <User size={18} />
+
+            <span>
+              Account
+            </span>
+
+          </button>
+
         </div>
 
       </nav>
@@ -1173,10 +1122,7 @@ function App() {
           SEARCH
       ================================================= */}
 
-      <section
-        className="search-section"
-        id="search"
-      >
+      <section className="search-section">
 
         <div className="search-box">
 
@@ -1967,7 +1913,6 @@ function App() {
 
         <section
           className="products-section"
-          id="recently-viewed"
         >
 
           <div className="section-header">
@@ -2052,394 +1997,24 @@ function App() {
 
 
       {/* =================================================
-          PRODUCT DETAILS MODAL
-      ================================================= */}
-
-      {selectedProduct && (
-        <div
-          onClick={() => setSelectedProduct(null)}
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 9999,
-            background: "rgba(0, 0, 0, 0.78)",
-            backdropFilter: "blur(14px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "24px",
-          }}
-        >
-          <div
-            onClick={(event) => event.stopPropagation()}
-            style={{
-              width: "100%",
-              maxWidth: "900px",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              borderRadius: "24px",
-              background: "linear-gradient(145deg, #171725, #0f0f18)",
-              border: "1px solid rgba(255,255,255,0.12)",
-              boxShadow: "0 30px 100px rgba(0,0,0,0.65)",
-              position: "relative",
-              padding: "28px",
-            }}
-          >
-            <button
-              onClick={() => setSelectedProduct(null)}
-              style={{
-                position: "absolute",
-                top: "18px",
-                right: "18px",
-                width: "38px",
-                height: "38px",
-                borderRadius: "50%",
-                border: "1px solid rgba(255,255,255,0.12)",
-                background: "rgba(255,255,255,0.07)",
-                color: "#fff",
-                fontSize: "22px",
-                cursor: "pointer",
-                zIndex: 5,
-              }}
-              aria-label="Close product details"
-            >
-              ×
-            </button>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "minmax(280px, 0.9fr) minmax(300px, 1.1fr)",
-                gap: "32px",
-                alignItems: "center",
-              }}
-            >
-              <div
-                style={{
-                  minHeight: "360px",
-                  borderRadius: "20px",
-                  background: "linear-gradient(145deg, #202033, #12121d)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "25px",
-                }}
-              >
-                <img
-                  src={selectedProduct.image_url || selectedProduct.image}
-                  alt={selectedProduct.name}
-                  style={{
-                    width: "100%",
-                    maxHeight: "330px",
-                    objectFit: "contain",
-                    borderRadius: "16px",
-                  }}
-                />
-              </div>
-
-              <div>
-                <span
-                  style={{
-                    display: "inline-block",
-                    padding: "7px 12px",
-                    borderRadius: "20px",
-                    background: "rgba(124,58,237,0.15)",
-                    border: "1px solid rgba(124,58,237,0.3)",
-                    color: "#c4b5fd",
-                    fontSize: "12px",
-                    fontWeight: "700",
-                    marginBottom: "16px",
-                  }}
-                >
-                  {selectedProduct.category || "Product"}
-                </span>
-
-                <h2
-                  style={{
-                    margin: "0 0 8px",
-                    color: "#fff",
-                    fontSize: "32px",
-                    lineHeight: "1.15",
-                  }}
-                >
-                  {selectedProduct.name}
-                </h2>
-
-                {selectedProduct.brand && (
-                  <p
-                    style={{
-                      margin: "0 0 18px",
-                      color: "#9292a8",
-                      fontSize: "15px",
-                    }}
-                  >
-                    {selectedProduct.brand}
-                  </p>
-                )}
-
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    marginBottom: "20px",
-                    color: "#fcd34d",
-                    fontSize: "14px",
-                    fontWeight: "700",
-                  }}
-                >
-                  ⭐ {selectedProduct.rating ?? "4.5"}
-                  <span style={{ color: "#77778a", fontWeight: "400" }}>
-                    Product Rating
-                  </span>
-                </div>
-
-                <div
-                  style={{
-                    fontSize: "30px",
-                    fontWeight: "800",
-                    color: "#fff",
-                    marginBottom: "20px",
-                  }}
-                >
-                  ₹{Number(selectedProduct.price || 0).toLocaleString("en-IN")}
-                </div>
-
-                <div style={{ marginBottom: "22px" }}>
-                  <h4 style={{ color: "#fff", margin: "0 0 8px", fontSize: "14px" }}>
-                    Description
-                  </h4>
-                  <p
-                    style={{
-                      color: "#aaaabd",
-                      lineHeight: "1.7",
-                      margin: 0,
-                      fontSize: "14px",
-                    }}
-                  >
-                    {selectedProduct.description ||
-                      "No description available for this product."}
-                  </p>
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    marginBottom: "24px",
-                    color:
-                      Number(selectedProduct.stock || 0) > 0
-                        ? "#86efac"
-                        : "#fca5a5",
-                    fontSize: "14px",
-                    fontWeight: "700",
-                  }}
-                >
-                  <span
-                    style={{
-                      width: "9px",
-                      height: "9px",
-                      borderRadius: "50%",
-                      background:
-                        Number(selectedProduct.stock || 0) > 0
-                          ? "#22c55e"
-                          : "#ef4444",
-                    }}
-                  />
-                  {Number(selectedProduct.stock || 0) > 0
-                    ? `In Stock • ${selectedProduct.stock} available`
-                    : "Out of Stock"}
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "12px",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <button
-                    className="primary-button"
-                    onClick={() => toggleFavorite(selectedProduct.id)}
-                  >
-                    <Heart
-                      size={18}
-                      fill={
-                        favorites.includes(selectedProduct.id)
-                          ? "currentColor"
-                          : "none"
-                      }
-                    />
-                    {favorites.includes(selectedProduct.id)
-                      ? "Remove Favorite"
-                      : "Add to Favorites"}
-                  </button>
-
-                  <button
-                    className="secondary-button"
-                    onClick={() => setSelectedProduct(null)}
-                  >
-                    Continue Shopping
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-
-      {/* =================================================
           FOOTER
       ================================================= */}
 
-      <footer
-        style={{
-          position: "relative",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: "24px",
-          flexWrap: "wrap",
-          padding: "34px 8%",
-        }}
-      >
+      <footer>
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "18px",
-            minWidth: 0,
-          }}
-        >
+        <div className="logo">
 
-          <div className="logo" style={{ flexShrink: 0 }}>
-            Product<span>AI</span>
-          </div>
-
-          <p
-            style={{
-              margin: 0,
-              color: "rgba(255,255,255,0.42)",
-              fontSize: "13px",
-              lineHeight: "1.5",
-            }}
-          >
-            Intelligent product discovery
-            <br />
-            powered by machine learning.
-          </p>
+          Product<span>AI</span>
 
         </div>
 
 
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "7px",
-            padding: "7px 13px",
-            borderRadius: "999px",
-            border: "1px solid rgba(124,58,237,0.22)",
-            background: "rgba(255,255,255,0.025)",
-            boxShadow: "0 0 24px rgba(124,58,237,0.07)",
-            whiteSpace: "nowrap",
-            animation: "footerCreditFloat 3.5s ease-in-out infinite",
-          }}
-        >
+        <p>
 
-          <span
-            style={{
-              color: "rgba(255,255,255,0.42)",
-              fontSize: "10px",
-              fontWeight: 500,
-              letterSpacing: "0.04em",
-            }}
-          >
-            Crafted by
-          </span>
+          Intelligent product discovery
+          powered by machine learning.
 
-          <span
-            style={{
-              fontSize: "11px",
-              fontWeight: 800,
-              letterSpacing: "0.02em",
-              background:
-                "linear-gradient(90deg,#a78bfa,#60a5fa,#f472b6,#a78bfa)",
-              backgroundSize: "250% auto",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent",
-              animation: "footerNameShimmer 4s linear infinite",
-            }}
-          >
-            Ankit Kushwaha
-          </span>
-
-          <span
-            style={{
-              width: "5px",
-              height: "5px",
-              flexShrink: 0,
-              borderRadius: "50%",
-              background: "#8b5cf6",
-              boxShadow: "0 0 9px rgba(139,92,246,0.9)",
-              animation: "footerDotPulse 1.8s ease-in-out infinite",
-            }}
-          />
-
-        </div>
-
-
-        <style>{`
-          @keyframes footerNameShimmer {
-            0% {
-              background-position: 0% center;
-            }
-            100% {
-              background-position: 250% center;
-            }
-          }
-
-          @keyframes footerDotPulse {
-            0%, 100% {
-              opacity: 0.45;
-              transform: scale(0.8);
-            }
-            50% {
-              opacity: 1;
-              transform: scale(1.25);
-            }
-          }
-
-          @keyframes footerCreditFloat {
-            0%, 100% {
-              transform: translateY(0);
-            }
-            50% {
-              transform: translateY(-2px);
-            }
-          }
-
-          @media (max-width: 700px) {
-            footer {
-              justify-content: center !important;
-              text-align: center;
-            }
-
-            footer > div:first-child {
-              justify-content: center;
-              flex-wrap: wrap;
-            }
-
-            footer > div:first-child p {
-              width: 100%;
-            }
-          }
-        `}</style>
+        </p>
 
       </footer>
 
