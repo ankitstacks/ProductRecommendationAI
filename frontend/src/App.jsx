@@ -351,50 +351,64 @@ function App() {
       "recently-viewed",
     ];
 
-    const sections = sectionIds
-      .map((id) => document.getElementById(id))
-      .filter(Boolean);
+    const updateActiveSection = () => {
 
-    if (!sections.length) {
-      return;
-    }
+      const sections = sectionIds
+        .map((id) => document.getElementById(id))
+        .filter(Boolean);
 
-    const observer = new IntersectionObserver(
-      (entries) => {
+      if (!sections.length) return;
 
-        const visibleSections = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort(
-            (a, b) =>
-              b.intersectionRatio - a.intersectionRatio
-          );
+      // Use the section whose top has most recently crossed
+      // the upper part of the viewport. This reliably catches
+      // the Products section even when sections have different heights.
+      const triggerPoint = window.innerHeight * 0.35;
 
-        if (!visibleSections.length) {
-          return;
+      let activeSection = sections[0];
+
+      for (const section of sections) {
+        const top = section.getBoundingClientRect().top;
+
+        if (top <= triggerPoint) {
+          activeSection = section;
         }
-
-        const activeId =
-          visibleSections[0].target.id;
-
-        if (window.location.hash !== `#${activeId}`) {
-          window.history.replaceState(
-            null,
-            "",
-            `#${activeId}`
-          );
-        }
-      },
-      {
-        threshold: [0.2, 0.35, 0.5, 0.65],
-        rootMargin: "-15% 0px -55% 0px",
       }
+
+      const activeId = activeSection.id;
+
+      if (window.location.hash !== `#${activeId}`) {
+        window.history.replaceState(
+          null,
+          "",
+          `#${activeId}`
+        );
+      }
+    };
+
+    updateActiveSection();
+
+    window.addEventListener(
+      "scroll",
+      updateActiveSection,
+      { passive: true }
     );
 
-    sections.forEach((section) =>
-      observer.observe(section)
+    window.addEventListener(
+      "resize",
+      updateActiveSection
     );
 
-    return () => observer.disconnect();
+    return () => {
+      window.removeEventListener(
+        "scroll",
+        updateActiveSection
+      );
+
+      window.removeEventListener(
+        "resize",
+        updateActiveSection
+      );
+    };
 
   }, [loading, recentlyViewed.length]);
 
