@@ -727,7 +727,7 @@ function App() {
           recently_viewed_ids:
             viewedIds,
 
-          limit: 5,
+          limit: 8,
 
         };
 
