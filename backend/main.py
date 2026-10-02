@@ -28,6 +28,7 @@ from database import (
 )
 
 import models
+from seed_products import seed_products
 
 from recommendation import (
     get_recommendations,
@@ -45,6 +46,10 @@ from admin_crud import router as admin_product_router
 Base.metadata.create_all(
     bind=engine
 )
+
+# Seed the production database with starter products when empty.
+# Existing products are preserved and are never duplicated.
+seed_products()
 
 
 # ============================================================
