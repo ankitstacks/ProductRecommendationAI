@@ -14,7 +14,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-const API_URL = "http://https://productrecommendationai.onrender.com";
+const API_URL = "https://productrecommendationai.onrender.com";
 
 const FAVORITES_KEY = "productAI_favorites";
 const RECENTLY_VIEWED_KEY = "productAI_recentlyViewed";

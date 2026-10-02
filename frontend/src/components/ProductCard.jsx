@@ -5,7 +5,7 @@ import { Heart, Star } from "lucide-react";
 // PRODUCTAI API
 // ============================================================
 
-const API_URL = "http://https://productrecommendationai.onrender.com";
+const API_URL = "https://productrecommendationai.onrender.com";
 
 
 // ============================================================

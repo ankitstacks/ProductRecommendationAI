@@ -22,7 +22,7 @@ function App() {
   // =====================================================
 
   const API_BASE_URL =
-    "http://https://productrecommendationai.onrender.com";
+    "https://productrecommendationai.onrender.com";
 
 
   // =====================================================
