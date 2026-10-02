@@ -274,19 +274,21 @@ function App() {
 
   useEffect(() => {
 
-    const loadProducts = async (showLoading = false) => {
+    const loadProducts = async (showLoading = true) => {
 
       try {
 
         if (showLoading) {
           setLoading(true);
+          setError("");
         }
-
-        setError("");
 
 
         const response = await fetch(
-          `${API_BASE_URL}/api/products`
+          `${API_BASE_URL}/api/products`,
+          {
+            cache: "no-store",
+          }
         );
 
 
@@ -319,9 +321,11 @@ function App() {
         );
 
 
-        setError(
-          "Unable to load products. Please make sure the FastAPI backend is running."
-        );
+        if (showLoading) {
+          setError(
+            "Unable to load products. Please make sure the FastAPI backend is running."
+          );
+        }
 
       } finally {
 
@@ -334,12 +338,14 @@ function App() {
     };
 
 
+    // Initial load shows the normal loading screen.
     loadProducts(true);
 
-    const productRefreshInterval = setInterval(
-      loadProducts,
-      5000
-    );
+    // Silent refresh keeps Admin-added products synced without
+    // refreshing the page or changing the user's scroll position.
+    const productRefreshInterval = setInterval(() => {
+      loadProducts(false);
+    }, 5000);
 
     return () => {
       clearInterval(productRefreshInterval);
