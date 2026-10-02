@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="/favicon.png?v=3" />
+  <link rel="apple-touch-icon" href="/favicon.png?v=3" />
   <title>ProductAI — Admin Analytics</title>
 
   <style>
@@ -1073,6 +1075,17 @@
     }
 
     loadAll();
+
+    // Keep admin analytics live while the dashboard is open.
+    // New views, favorites and recommendation clicks will appear automatically.
+    setInterval(() => {
+      loadAnalytics();
+    }, 5000);
+
+    // Refresh immediately when returning to the admin tab.
+    window.addEventListener("focus", () => {
+      loadAnalytics();
+    });
   </script>
 </body>
 </html>
