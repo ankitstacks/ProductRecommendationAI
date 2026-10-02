@@ -73,8 +73,8 @@ app.include_router(admin_product_router)
 app.add_middleware(
     CORSMiddleware,
 
+    # Local development origins.
     allow_origins=[
-        # Local development
         "http://localhost:5173",
         "http://localhost:5174",
         "http://localhost:5175",
@@ -82,10 +82,15 @@ app.add_middleware(
         "http://127.0.0.1:5174",
         "http://127.0.0.1:5175",
 
-        # Vercel production frontend
+        # Vercel production / current deployment domains.
         "https://productrecommendationai.vercel.app",
         "https://productrecommendationai-git-main-ankit-stack.vercel.app",
     ],
+
+    # Also allow Vercel preview deployments for this project.
+    # This prevents CORS failures when Vercel assigns a different
+    # deployment URL after a new production/preview deployment.
+    allow_origin_regex=r"^https://.*\.vercel\.app$",
 
     allow_credentials=True,
 
