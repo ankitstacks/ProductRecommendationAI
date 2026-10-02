@@ -274,7 +274,7 @@ function App() {
 
   useEffect(() => {
 
-    const loadProducts = async (showLoading = true) => {
+    const loadProducts = async (showLoading = false) => {
 
       try {
 
@@ -285,7 +285,7 @@ function App() {
 
 
         const response = await fetch(
-          `${API_BASE_URL}/api/products`,
+          `${API_BASE_URL}/api/products?_=${Date.now()}`,
           {
             cache: "no-store",
           }
@@ -338,11 +338,8 @@ function App() {
     };
 
 
-    // Initial load shows the normal loading screen.
     loadProducts(true);
 
-    // Silent refresh keeps Admin-added products synced without
-    // refreshing the page or changing the user's scroll position.
     const productRefreshInterval = setInterval(() => {
       loadProducts(false);
     }, 5000);
