@@ -274,11 +274,13 @@ function App() {
 
   useEffect(() => {
 
-    const loadProducts = async () => {
+    const loadProducts = async (showLoading = false) => {
 
       try {
 
-        setLoading(true);
+        if (showLoading) {
+          setLoading(true);
+        }
 
         setError("");
 
@@ -323,14 +325,16 @@ function App() {
 
       } finally {
 
-        setLoading(false);
+        if (showLoading) {
+          setLoading(false);
+        }
 
       }
 
     };
 
 
-    loadProducts();
+    loadProducts(true);
 
     const productRefreshInterval = setInterval(
       loadProducts,
