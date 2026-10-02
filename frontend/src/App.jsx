@@ -285,7 +285,7 @@ function App() {
 
 
         const response = await fetch(
-          `${API_BASE_URL}/api/products?_=${Date.now()}`,
+          `${API_BASE_URL}/api/admin/products?_=${Date.now()}`,
           {
             cache: "no-store",
           }
